@@ -1,13 +1,3 @@
-const express = require("express");
-
-const app = express();
-
-const PORT = 3000;
-
-// Allows our API to receive JSON data
-app.use(express.json());
-
-// Temporary in-memory task storage
 let tasks = [
     {
         id: 1,
@@ -23,20 +13,11 @@ let tasks = [
     }
 ];
 
-// Home route
-app.get("/", (req, res) => {
-    res.json({
-        message: "DevOps Task Manager API is running!"
-    });
-});
-
-// GET all tasks
-app.get("/tasks", (req, res) => {
+const getTasks = (req, res) => {
     res.json(tasks);
-});
+};
 
-// GET a single task
-app.get("/tasks/:id", (req, res) => {
+const getTaskById = (req, res) => {
     const id = parseInt(req.params.id);
 
     const task = tasks.find(task => task.id === id);
@@ -48,10 +29,9 @@ app.get("/tasks/:id", (req, res) => {
     }
 
     res.json(task);
-});
+};
 
-// CREATE a task
-app.post("/tasks", (req, res) => {
+const createTask = (req, res) => {
     const { title, description } = req.body;
 
     const newTask = {
@@ -64,10 +44,9 @@ app.post("/tasks", (req, res) => {
     tasks.push(newTask);
 
     res.status(201).json(newTask);
-});
+};
 
-// UPDATE a task
-app.put("/tasks/:id", (req, res) => {
+const updateTask = (req, res) => {
     const id = parseInt(req.params.id);
 
     const task = tasks.find(task => task.id === id);
@@ -85,10 +64,9 @@ app.put("/tasks/:id", (req, res) => {
     if (status !== undefined) task.status = status;
 
     res.json(task);
-});
+};
 
-// DELETE a task
-app.delete("/tasks/:id", (req, res) => {
+const deleteTask = (req, res) => {
     const id = parseInt(req.params.id);
 
     const taskIndex = tasks.findIndex(task => task.id === id);
@@ -105,9 +83,12 @@ app.delete("/tasks/:id", (req, res) => {
         message: "Task deleted successfully",
         task: deletedTask[0]
     });
-});
+};
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+module.exports = {
+    getTasks,
+    getTaskById,
+    createTask,
+    updateTask,
+    deleteTask
+};
